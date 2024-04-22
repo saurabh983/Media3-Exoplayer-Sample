@@ -7,7 +7,12 @@ import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.dash.DashMediaSource
+import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.smoothstreaming.SsMediaSource
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.ui.PlayerControlView
@@ -26,6 +31,17 @@ class MainActivity : AppCompatActivity() {
     private val mediaSourceFactory: MediaSource.Factory by lazy {
         DefaultMediaSourceFactory(this)
     }
+
+    //For HLS
+    val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+    val mediaItem = MediaItem.fromUri(bunnyUrl)
+    private val hlsMediaSource  = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+
+    //For DASH
+    private val dashMediaSource  = DashMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+
+    //For SmoothStreaming
+    private val ssMediaSource  = SsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
 
     private val player : ExoPlayer by lazy {
         ExoPlayer.Builder(this).setMediaSourceFactory(mediaSourceFactory).build()
@@ -63,7 +79,7 @@ class MainActivity : AppCompatActivity() {
          * RtspMediaSource for RTSP.
          */
 
-
+//        player.setMediaSource(hlsMediaSource)
 
         playerView.player = player
         player.prepare()
